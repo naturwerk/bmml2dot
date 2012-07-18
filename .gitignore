@@ -1,0 +1,5 @@
+testfiles/
+bin
+.classpath
+.project
+.settings/
