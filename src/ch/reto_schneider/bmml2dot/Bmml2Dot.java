@@ -102,7 +102,7 @@ public class Bmml2Dot {
 			linkLabelArray = splitText(
 					controlElement.getAttribute("controlTypeID"),
 					textElementContent);
-			linkToArray = extractHrefs(controlPropertiesElement, linkToArray);
+			linkToArray = extractLinksTo(controlPropertiesElement, linkToArray);
 
 			// if there are no links available, continue
 			if (linkToArray == null) {
@@ -125,7 +125,7 @@ public class Bmml2Dot {
 					dotEdgeVector.add(dotEdge);
 				} else {
 					System.err.println(linkFrom + ": '" + linkLabel
-							+ "' has no matching href");
+							+ "' has no matching link");
 				}
 			}
 		}
@@ -136,13 +136,13 @@ public class Bmml2Dot {
 	 * given controlProperties element.
 	 * 
 	 * @param currentControlPropertiesElement
-	 * @param hrefs
+	 * @param linksTo
 	 * @return
 	 * @throws Exception
 	 * @throws UnsupportedEncodingException
 	 */
-	private ArrayList<String> extractHrefs(
-			Element currentControlPropertiesElement, ArrayList<String> hrefs)
+	private ArrayList<String> extractLinksTo(
+			Element currentControlPropertiesElement, ArrayList<String> linksTo)
 			throws Exception, UnsupportedEncodingException {
 		Element currentHrefsNode;
 		Element currentHrefNode;
@@ -152,16 +152,16 @@ public class Bmml2Dot {
 				currentControlPropertiesElement, "hrefs");
 		if (currentHrefsNode != null) {
 			String currentHrefsNodeText = decodeText(currentHrefsNode);
-			hrefs = new ArrayList<String>(Arrays.asList(currentHrefsNodeText
+			linksTo = new ArrayList<String>(Arrays.asList(currentHrefsNodeText
 					.split(",", -1)));
 		} else if (currentHrefNode != null) {
 			String currentHrefNodeText = decodeText(currentHrefNode);
-			hrefs = new ArrayList<String>(Arrays.asList(currentHrefNodeText
+			linksTo = new ArrayList<String>(Arrays.asList(currentHrefNodeText
 					.split(",", -1)));
 		} else {
 			return null;
 		}
-		return hrefs;
+		return linksTo;
 	}
 
 	/**
@@ -234,7 +234,7 @@ public class Bmml2Dot {
 		for (DotEdge currentDotEdge : dotEdgeVector) {
 			outstream.println("\t\"" + currentDotEdge.sourceFilename
 					+ "\" -> \"" + currentDotEdge.destinationFilename
-					+ "\"[label=\"" + currentDotEdge.hrefText + "\"]");
+					+ "\"[label=\"" + currentDotEdge.linkLabel + "\"]");
 		}
 		outstream.println("}");
 	}
